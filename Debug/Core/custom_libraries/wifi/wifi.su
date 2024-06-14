@@ -1,0 +1,4 @@
+../Core/custom_libraries/wifi/wifi.c:65:19:send_wifi_command	24	static
+../Core/custom_libraries/wifi/wifi.c:86:6:receive_wifi_command	16	static
+../Core/custom_libraries/wifi/wifi.c:109:6:sendTCPCommand	32	static
+../Core/custom_libraries/wifi/wifi.c:129:6:check_wifi_response	16	static

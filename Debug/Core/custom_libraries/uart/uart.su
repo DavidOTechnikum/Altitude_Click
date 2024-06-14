@@ -1,0 +1,3 @@
+../Core/custom_libraries/uart/uart.c:38:6:check_for_buffer_overflow	16	static
+../Core/custom_libraries/uart/uart.c:54:6:clear_buffer_overflow	16	static
+../Core/custom_libraries/uart/uart.c:79:6:HAL_UARTEx_RxEventCallback	16	static

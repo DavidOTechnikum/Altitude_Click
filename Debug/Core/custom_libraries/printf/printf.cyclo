@@ -1,0 +1,2 @@
+../Core/custom_libraries/printf/printf.c:34:5:__io_putchar	3
+../Core/custom_libraries/printf/printf.c:67:5:_write	2
