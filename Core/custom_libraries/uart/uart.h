@@ -23,6 +23,7 @@
 #include "usart.h"
 
 #define MAX_BUFFER_SIZE 255
+#define UART_OVERFLOW "UART OVERFLOW"
 
 bool check_for_buffer_overflow(UART_HandleTypeDef *huart);
 void clear_buffer_overflow(UART_HandleTypeDef *huart);

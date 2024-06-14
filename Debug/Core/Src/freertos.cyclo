@@ -1,5 +1,5 @@
-../Core/Src/freertos.c:155:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:210:6:start_monitor_task	4
-../Core/Src/freertos.c:243:6:start_data_task	4
-../Core/Src/freertos.c:285:6:start_wifi_monitor_task	1
-../Core/Src/freertos.c:380:6:start_sender_task	6
+../Core/Src/freertos.c:143:6:MX_FREERTOS_Init	1
+../Core/Src/freertos.c:198:6:start_monitor_task	4
+../Core/Src/freertos.c:231:6:start_data_task	4
+../Core/Src/freertos.c:273:6:start_wifi_monitor_task	3
+../Core/Src/freertos.c:315:6:start_sender_task	6

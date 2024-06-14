@@ -47,6 +47,7 @@ typedef StaticTask_t osStaticThreadDef_t;
 /* USER CODE BEGIN PD */
 
 #define DATA_DELAY 5000
+#define POLLING_DELAY 5000
 #define ALT_DELAY 10000
 #define WIFI_WAIT 1000
 #define ERROR_VALUE -3333
@@ -62,24 +63,11 @@ typedef StaticTask_t osStaticThreadDef_t;
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 
-// Disclaimer: ESP32 command variables and buffer variable copied from lecturer's demo code.
-uint8_t at_cmd[] = "AT\r\n";
-uint8_t restore_factory[] = "AT+RESTORE\r\n";
-uint8_t cwstate_cmd[] = "AT+CWSTATE?\r\n";
-uint8_t rst_cmd[] = "AT+RST\r\n";
-uint8_t set_cwmode_cmd[]  = "AT+CWMODE=1\r\n";
-uint8_t set_cwsap_cmd[]  = "AT+CWSAP=\"ESP_SSID\",\"1234567890\",5,3\r\n";
-uint8_t get_cwsap_cmd[] = "AT+CWSAP?\r\n";
-uint8_t connect_to_ap[] = "AT+CWJAP=\"ESP_SSID\",\"1234567890\"\r\n";
-uint8_t connect_to_TCP[] = "AT+CIPSTART=\"TCP\",\"192.168.9.1\",5000\r\n";
-uint8_t get_ip_cmd[] = "AT+CIFSR\r\n";
+extern uint8_t rxBuffer_uart_1[MAX_BUFFER_SIZE];
+bool wifi_on = false;
+bool no_tcp_connection = false;
 uint8_t obtain_tcp_connection[] = "AT+CIPSTATE?\r\n";
 
-extern uint8_t rxBuffer_uart_1[MAX_BUFFER_SIZE];
-
-bool wifi_on = false;
-
-bool ok_bool = false;
 /* USER CODE END Variables */
 /* Definitions for monitor_task */
 osThreadId_t monitor_taskHandle;
@@ -255,7 +243,7 @@ while(wifi_on == false) {
 	osDelay(DATA_DELAY);
 }
 	 for(;;) {
-		 osDelay(DATA_DELAY);
+		 osDelay(POLLING_DELAY);
 		 HAL_I2C_Mem_Read(&hi2c1, 0xC0, 0x11, 1, &sysmod, 1, HAL_MAX_DELAY);
 		 if (sysmod == 1) {
 
@@ -285,6 +273,8 @@ while(wifi_on == false) {
 void start_wifi_monitor_task(void *argument)
 {
   /* USER CODE BEGIN start_wifi_monitor_task */
+	bool success_check = false;
+
   /* Infinite loop */
 /*
  * State-Machine:
@@ -298,74 +288,19 @@ void start_wifi_monitor_task(void *argument)
  * (Debuggen: ok-Nachricht an printf)
  *
  */
-wifi_on = true;
-	for (;;) {
-//		clear_buffer_overflow(&huart1);
-//		clear_buffer_overflow(&huart2);
-//		HAL_UARTEx_ReceiveToIdle_IT(&huart1, rxBuffer_uart_1, MAX_BUFFER_SIZE);
-//
-//	uint8_t response_check = 0;
-//	uint8_t response_buffer[MAX_BUFFER_SIZE];
-//
-//
-//	if(send_wifi_command(restore_factory, ARRAY_SIZE(restore_factory)) == HAL_OK) {
-//		printf("RESTORE sent\n");
-//		receive_wifi_command(restore_factory);
-//	}
-//
-//	osDelay(15000);
-//
-//	if(send_wifi_command(rst_cmd, ARRAY_SIZE(rst_cmd)) == HAL_OK) {
-//			printf("RST sent\n");
-//			receive_wifi_command(rst_cmd);
-//	}
-//	osDelay(5000);
-//
-//	if(send_wifi_command(set_cwmode_cmd, ARRAY_SIZE(set_cwmode_cmd)) == HAL_OK) {
-//				printf("CWMODE sent\n");
-//				receive_wifi_command(set_cwmode_cmd);
-//
-//	}
-//	osDelay(5000);
-//
-//	if(send_wifi_command(connect_to_ap, ARRAY_SIZE(connect_to_ap)) == HAL_OK) {
-//				printf("CONNECT sent\n");
-//				receive_wifi_command(connect_to_ap);
-//
-//	}
-//
-//	HAL_Delay(20000);
-//	send_wifi_command(at_cmd, ARRAY_SIZE(at_cmd));
-//	receive_wifi_command(at_cmd);
-//
-//	while(!response_check){
-//		if(send_wifi_command(connect_to_TCP, ARRAY_SIZE(connect_to_TCP)) == HAL_OK) {
-//			check_wifi_response(response_buffer);
-//			if (strstr((char*)response_buffer, "CONNECT")) {
-//				response_check = 1;
-//				memset(response_buffer, 0, MAX_BUFFER_SIZE);
-//			}
-//		}
-//		osDelay(1000);
-//	}
-//	response_check = 0;
 //wifi_on = true;
-//ok_bool = false;
-//
-//
-//	for(;;)
-//	{
-//		if(send_wifi_command(obtain_tcp_connection, ARRAY_SIZE(obtain_tcp_connection)) == HAL_OK) {
-//			printf("OBTAIN TCP CONNECTION sent\n");
-//			receive_wifi_command(obtain_tcp_connection);
-//		}
-//		if(ok_bool) {
-//			break;
-//		}
-//
-//    osDelay(10000);
-//	}
+	for (;;) {
+		wifi_on = wifi_init();
 
+		for (;;) {
+			do {
+				success_check = wifi_init_stage_and_TCP_check(obtain_tcp_connection);
+			} while (!success_check);
+			if (no_tcp_connection) {
+				break;
+			}
+			osDelay(2 * WIFI_DELAY);
+		}
 	}
   /* USER CODE END start_wifi_monitor_task */
 }
@@ -395,7 +330,7 @@ void start_sender_task(void *argument)
 				  snprintf(sendmsg, sizeof(sendmsg), "ALT:%.2f\r\n", received.value);
 			  }
 			  printf(sendmsg);
-	//		  sendTCPCommand(sendmsg);
+			  send_TCP_command(sendmsg);
 		  }
 	  } else {
 		  osDelay(WIFI_WAIT);

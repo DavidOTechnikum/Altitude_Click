@@ -29,26 +29,21 @@ extern uint8_t rxBuffer_uart_1[MAX_BUFFER_SIZE];
 extern volatile bool is_uart_success;
 extern uint8_t uart_buffer[MAX_BUFFER_SIZE];
 extern osTimerId_t led_timerHandle;
-extern bool ok_bool;
+extern bool no_tcp_connection;
 
-osThreadId_t wifiTaskHandle;
-const osThreadAttr_t wifiTask_attributes = {
-		.name = WIFI_TASK_NAME,
-		.stack_size = WIFI_TASK_SIZE,
-		.priority = (osPriority_t) WIFI_TASK_PRIORITY,
-};
 
-//Those variable store the commands of the WiFi-Click which are used in this demo.
-//uint8_t at_cmd[] = "AT\r\n";
-//uint8_t restore_factory[] = "AT+RESTORE\r\n";
-//uint8_t cwstate_cmd[] = "AT+CWSTATE?\r\n";
-//uint8_t rst_cmd[] = "AT+RST\r\n";
-//uint8_t set_cwmode_cmd[]  = "AT+CWMODE=1\r\n";
-//uint8_t set_cwsap_cmd[]  = "AT+CWSAP=\"ESP_SSID\",\"1234567890\",5,3\r\n";
-//uint8_t get_cwsap_cmd[] = "AT+CWSAP?\r\n";
-//uint8_t connect_to_ap[] = "AT+CWJAP=\"ESP_SSID\",\"1234567890\"\r\n";
-//uint8_t connect_to_TCP[] = "AT+CIPSTART=\"TCP\",\"192.168.9.1\",5000\r\n";
-//uint8_t get_ip_cmd[] = "AT+CIFSR\r\n";
+
+// Disclaimer: ESP32 command variables and buffer variable copied from lecturer's demo code.
+uint8_t at_cmd[] = "AT\r\n";
+uint8_t restore_factory[] = "AT+RESTORE\r\n";
+uint8_t cwstate_cmd[] = "AT+CWSTATE?\r\n";
+uint8_t rst_cmd[] = "AT+RST\r\n";
+uint8_t set_cwmode_cmd[]  = "AT+CWMODE=1\r\n";
+uint8_t set_cwsap_cmd[]  = "AT+CWSAP=\"ESP_SSID\",\"1234567890\",5,3\r\n";
+uint8_t get_cwsap_cmd[] = "AT+CWSAP?\r\n";
+uint8_t connect_to_ap[] = "AT+CWJAP=\"SHWM97\",\"1234567890\"\r\n";
+uint8_t connect_to_TCP[] = "AT+CIPSTART=\"TCP\",\"192.168.9.1\",5000\r\n";
+uint8_t get_ip_cmd[] = "AT+CIFSR\r\n";
 
 
 /**
@@ -83,36 +78,45 @@ HAL_StatusTypeDef send_wifi_command(uint8_t* cmd, uint8_t cmd_size) {
  *
  * @return void This function does not return a value.
  */
-void receive_wifi_command(uint8_t* cmd) {
+bool receive_wifi_command(uint8_t* cmd) {
 	osDelay(400);
 	if(is_uart_success == true) {
 		printf("\r\nReceived from %s\r\n", cmd);
 		printf("%s\r\n", uart_buffer);
-		if (strcmp(uart_buffer, "OK") == 0) {
-			ok_bool = true;
+		if (strcmp((char*)uart_buffer, "OK") == 0) {
+			no_tcp_connection = true;
 		}
 		memset(uart_buffer, 0, MAX_BUFFER_SIZE);
 	}
 	else {
 		printf("\r\nReceiving %s failed\r\n", cmd);
+		return false;
 	}
 	is_uart_success = false;
+	return true;
 }
 
 /**
- * @brief Sends a command via TCP at the Wifi click module. There is no error handling here!
+ * @brief Sends a command via TCP at the Wifi click module.
  *
  * @param const char* command A pointer to the stored command data.
  *
  * @return void This function does not return a value.
  */
-void sendTCPCommand(const char* command) {
+HAL_StatusTypeDef send_TCP_command(const char* command) {
 	char buffer[16];
+	HAL_StatusTypeDef result;
 	snprintf(buffer, sizeof(buffer), "AT+CIPSEND=%d\r\n", strlen(command));
-	HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
-	HAL_Delay(1000);  // Delay for CIPSEND ready signal
-	HAL_UART_Transmit(&huart1, (uint8_t*)command, strlen(command), HAL_MAX_DELAY);
-	receive_wifi_command((uint8_t*)buffer);
+	result = HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+	if (result != HAL_OK) {
+		return result;
+	}
+	osDelay(1000);  // Delay for CIPSEND ready signal
+	result = HAL_UART_Transmit(&huart1, (uint8_t*)command, strlen(command), HAL_MAX_DELAY);
+	if (!receive_wifi_command((uint8_t*)buffer)) {
+		result = HAL_ERROR;
+	}
+	return result;
 }
 
 /**
@@ -126,7 +130,8 @@ void sendTCPCommand(const char* command) {
  *
  * @return void This function does not return a value.
  */
-void check_wifi_response(uint8_t* response){
+bool check_wifi_response(uint8_t* response){
+	bool result = true;
 	HAL_Delay(200);
 	if(is_uart_success == true) {
 		printf("\r\nReceived %s\r\n", uart_buffer);
@@ -134,94 +139,72 @@ void check_wifi_response(uint8_t* response){
 		memset(uart_buffer, 0, MAX_BUFFER_SIZE);
 	}
 	else {
+		result = false;
 		printf("\r\nReceiving failed\r\n");
 	}
 	is_uart_success = false;
+	return result;
 }
 
-/**
- * @brief A function which initializes the wifi-task. It creates the task itself.
- * Clears both UART interfaces (1 and 2) as well as sets the UART1 to receive data.
- *
- * @return void This function does not return a value.
- */
-//void init_wifi_task(void) {
-//	printf("wifi_task init\r\n");
-//
-//	wifiTaskHandle = osThreadNew(wifiTask_f, NULL, &wifiTask_attributes);
-//
-//	if (wifiTaskHandle == NULL) {
-//		printf("creating wifi_task_failed\r\n");
-//	}
-//
-//	clear_buffer_overflow(&huart1);
-//	clear_buffer_overflow(&huart2);
-//	HAL_UARTEx_ReceiveToIdle_IT(&huart1, rxBuffer_uart_1, MAX_BUFFER_SIZE);
-//}
+bool wifi_init_stage_and_TCP_check(uint8_t* cmd) {
+	bool result = true;
+	if (send_wifi_command(cmd, strlen((char*)cmd)) == HAL_OK) {
+		printf("%s sent\n", cmd);
+		if (!receive_wifi_command(cmd)) {
+			result = false;
+		}
+	} else {
+		result = false;
+	}
+	return result;
+}
 
-/**
- * @brief Task function for the wifi-task.
- * During the first call of this task function the wifi-click module gets initialized.
- * "restore_factory" --> set all factory settings to the wifi click to have defined starting point
- * "rst_cmd" --> resets the wifi-click
- * "set_cwmode_cmd" --> sets the wifi-click to act in station mode
- * "connect_to_ap" --> command to establish a connection to the access point (in our case another Wifi-click)
- *
- * Note that the successful execution of those commands is not checked here! --> you will have to implement this!
- *
- * After that we continuously try to establish a TCP connection. How long this will take varies so we check here if we receive the "CONNECT" message.
- * Only if "CONNECT" was received a flag gets set and the code execution continues to the main while forever loop.
- *
- * In this loop the command for turning on/off the LED on the other side gets called repeatedly.
- *
- * @param void *pvParameters Can be used to give the tasks some parameters during execution. Not used here.
- *
- * @return void This function does not return a value.
- */
-//void wifiTask_f(void *pvParameters) {
-//
-//	uint8_t response_check = 0;
-//	uint8_t response_buffer[MAX_BUFFER_SIZE];
-//
-//
-//	if(send_wifi_command(restore_factory, ARRAY_SIZE(restore_factory)) == HAL_OK) {
-//		receive_wifi_command(restore_factory);
-//	}
-//	HAL_Delay(15000);
-//
-//	if(send_wifi_command(rst_cmd, ARRAY_SIZE(rst_cmd)) == HAL_OK) {
-//		receive_wifi_command(rst_cmd);
-//	}
-//	HAL_Delay(5000);
-//
-//	if(send_wifi_command(set_cwmode_cmd, ARRAY_SIZE(set_cwmode_cmd)) == HAL_OK) {
-//		receive_wifi_command(set_cwmode_cmd);
-//	}
-//	HAL_Delay(5000);
-//
-//	if(send_wifi_command(connect_to_ap, ARRAY_SIZE(connect_to_ap)) == HAL_OK) {
-//		receive_wifi_command(connect_to_ap);
-//	}
-//	HAL_Delay(20000);
-//
-//	while(!response_check){
-//		if(send_wifi_command(connect_to_TCP, ARRAY_SIZE(connect_to_TCP)) == HAL_OK) {
-//			check_wifi_response(response_buffer);
-//			if (strstr((char*)response_buffer, "CONNECT")) {
-//				response_check = 1;
-//				memset(response_buffer, 0, MAX_BUFFER_SIZE);
-//			}
-//		}
-//		HAL_Delay(1000);
-//	}
-//	response_check = 0;
-//
-//	while (1) {
-//
-//		HAL_Delay(1000);
-//		sendTCPCommand("on\r\n");  // Send command to turn LED on
-//		HAL_Delay(5000);           // Wait 5 seconds
-//		sendTCPCommand("off\r\n");  // Send command to turn LED on
-//		HAL_Delay(5000);           // Wait 5 seconds
-//	}
-//}
+bool wifi_init() {
+	bool success_check = false;
+	bool response_check = false;
+	uint8_t response_buffer[MAX_BUFFER_SIZE];
+
+	clear_buffer_overflow(&huart1);
+	clear_buffer_overflow(&huart2);
+	HAL_UARTEx_ReceiveToIdle_IT(&huart1, rxBuffer_uart_1, MAX_BUFFER_SIZE);
+
+	do {
+		success_check = wifi_init_stage_and_TCP_check(restore_factory);
+	} while (!success_check);
+	osDelay(3 * WIFI_DELAY);
+
+	do {
+		success_check = wifi_init_stage_and_TCP_check(rst_cmd);
+	} while (!success_check);
+	osDelay(WIFI_DELAY);
+
+	do {
+		success_check = wifi_init_stage_and_TCP_check(set_cwmode_cmd);
+	} while (!success_check);
+	osDelay(WIFI_DELAY);
+
+	do {
+		success_check = wifi_init_stage_and_TCP_check(connect_to_ap);
+	} while (!success_check);
+	osDelay(4 * WIFI_DELAY);
+
+	//		send_wifi_command(at_cmd, ARRAY_SIZE(at_cmd));
+	//		receive_wifi_command(at_cmd);
+
+	while (!response_check) {
+		if (send_wifi_command(connect_to_TCP, ARRAY_SIZE(connect_to_TCP))
+				== HAL_OK) {
+			if (!check_wifi_response(response_buffer)) {
+				continue;
+			}
+			if (strstr((char*) response_buffer, "CONNECT")) {
+				response_check = true;
+				memset(response_buffer, 0, MAX_BUFFER_SIZE);
+			}
+		}
+		osDelay(SECOND);
+	}
+	no_tcp_connection = false;
+
+	return success_check;
+}

@@ -82,6 +82,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size) {
 		if(check_for_buffer_overflow(huart)) {
 			printf("overflow happened\r\n");
 			clear_buffer_overflow(huart);
+			memcpy(uart_buffer, UART_OVERFLOW, strlen(UART_OVERFLOW));
 		} else {
 
 			memcpy(uart_buffer, rxBuffer_uart_1, size);

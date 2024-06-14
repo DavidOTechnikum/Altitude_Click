@@ -37,13 +37,17 @@
 #define WIFI_TASK_NAME "wifi_task"
 #define WIFI_TASK_SIZE 512 * 4
 #define WIFI_TASK_PRIORITY osPriorityNormal
+#define WIFI_DELAY 5000
+#define SECOND 1000
 
-//void init_wifi_task(void);
-//void wifiTask_f(void *pvParameters);
+
 HAL_StatusTypeDef send_wifi_command(uint8_t* cmd, uint8_t cmd_size);
-void receive_wifi_command(uint8_t* cmd);
-void sendTCPCommand(const char* command);
-void check_wifi_response(uint8_t* response);
+bool receive_wifi_command(uint8_t* cmd);
+HAL_StatusTypeDef send_TCP_command(const char* command);
+bool check_wifi_response(uint8_t* response);
+bool wifi_init_stage_and_TCP_check(uint8_t* cmd);
+bool wifi_init();
+
 
 
 #endif //FREERTOS_WIFI_EXAMPLE_WIFI_TASK_H
