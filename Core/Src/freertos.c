@@ -51,9 +51,6 @@ typedef StaticTask_t osStaticThreadDef_t;
 #define WIFI_WAIT 1000
 #define ERROR_VALUE -3333
 
-
-
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -163,7 +160,12 @@ void MX_FREERTOS_Init(void) {
   data_queueHandle = osMessageQueueNew (16, sizeof(message), &data_queue_attributes);
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
+
+  if (data_queueHandle == NULL) {
+	  printf("data_queue not created\n");
+	  Error_Handler();
+  }
+
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -180,7 +182,27 @@ void MX_FREERTOS_Init(void) {
   sender_taskHandle = osThreadNew(sender_task_func, NULL, &sender_task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
+
+  if (alt_mon_taskHandle == NULL) {
+  	printf("altitude monitoring task not created\n");
+  	Error_Handler();
+  }
+
+  if (data_taskHandle == NULL) {
+  	printf("data task not created\n");
+  	Error_Handler();
+  }
+
+  if (wifi_mon_taskHandle == NULL) {
+  	printf("wifi monitoring task not created\n");
+  	Error_Handler();
+  }
+
+  if (sender_taskHandle == NULL) {
+  	printf("sender task not created\n");
+  	Error_Handler();
+  }
+
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
@@ -191,7 +213,11 @@ void MX_FREERTOS_Init(void) {
 
 /* USER CODE BEGIN Header_altitude_monitor_task_func */
 /**
-  * @brief  Function implementing the alt_mon_task thread.
+  * @brief  Monitoring task for Altitude Click.
+  * @note	This task initializes the Altitude Click and performs one
+  * 		altitude read before staying in pressure mode.
+  * 		It then checks the status (sysmod) periodically and will
+  * 		restart the initialization, if the device is not active.
   * @param  argument: Not used
   * @retval None
   */
@@ -214,9 +240,9 @@ void altitude_monitor_task_func(void *argument)
 				continue;
 			}
 		}
-		// check altitude click status
+		// check altitude click status (0 = not active)
 		osDelay(ALT_DELAY);
-		HAL_I2C_Mem_Read(&hi2c1, 0xC0, 0x11, 1, &sysmod, 1, HAL_MAX_DELAY);	// check system status: if 0, not active -> start and calibrate
+		HAL_I2C_Mem_Read(&hi2c1, 0xC0, 0x11, 1, &sysmod, 1, HAL_MAX_DELAY);
 	}
 
 
@@ -225,7 +251,11 @@ void altitude_monitor_task_func(void *argument)
 
 /* USER CODE BEGIN Header_data_task_func */
 /**
-* @brief Function implementing the data_task thread.
+* @brief 	Task reads from Altitude Click and sends the data to
+* 			sender task via message queue.
+* @note		Task will wait for WIFI Click to be started.
+* 			It is set to polling every 5 seconds (POLLING_DELAY).
+* 			Each read gets pressure and temperature value.
 * @param argument: Not used
 * @retval None
 */
@@ -266,7 +296,11 @@ void data_task_func(void *argument)
 
 /* USER CODE BEGIN Header_wifi_monitor_task_func */
 /**
-* @brief Function implementing the wifi_mon_task thread.
+* @brief 	Task starts WIFI Click and monitors it.
+* @note 	Task will start initialization of WIFI Click and
+* 			TCP connection to base station. Once a
+* 			connection is established, it will be checked periodically.
+* 			If connection is over, WIFI Click will reinitialize.
 * @param argument: Not used
 * @retval None
 */
@@ -277,7 +311,8 @@ void wifi_monitor_task_func(void *argument)
 	bool success_check = false;
 	uint8_t i;
   /* Infinite loop */
-	wifi_on = true;
+	// Next line: delete '//' for troubleshooting
+	//wifi_on = true;
 	for (;;) {
 		wifi_on = wifi_init();
 		if (!wifi_on) {
@@ -305,7 +340,14 @@ void wifi_monitor_task_func(void *argument)
 
 /* USER CODE BEGIN Header_sender_task_func */
 /**
-* @brief Function implementing the sender_task thread.
+* @brief 	Sender task gets data from sensor and sends TCP message.
+* @note 	This task waits for a message struct in the message queue.
+* 			It then builds the TCP message and sends it to the
+* 			base station.
+* 			Sending will be retried if unsuccesful, but
+* 			only 5 (RETRY/2) times. Since the program polls
+* 			every 5 seconds, single values are not so important
+* 			and will be discarded so as not to block the task.
 * @param argument: Not used
 * @retval None
 */

@@ -1,2 +1,2 @@
-../Core/custom_libraries/printf/printf.c:34:5:__io_putchar	24	static
-../Core/custom_libraries/printf/printf.c:67:5:_write	32	static
+../Core/custom_libraries/printf/printf.c:32:5:__io_putchar	24	static
+../Core/custom_libraries/printf/printf.c:65:5:_write	32	static

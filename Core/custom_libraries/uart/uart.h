@@ -1,4 +1,7 @@
 /**
+ * Disclaimer: 	This library is entirely taken from a demo project provided by the lecturer.
+ * 				It is not the work of this project's author.
+ *
  * @file    uart.h
  * @author  Volker Tenta, Patrick Schmitt
  * @version 0.0.1
@@ -6,16 +9,10 @@
  *
  * @brief This library features a few useful function for handling data via the UART interface.
  *
- *  WARNING! THIS IS A DEMO IMPLEMENTATION! DOES NOT FEATURE ALL ERROR HANDLING / CHECKS!!!
- *
- *  This is only a starting point for your own implementations!
- *
- *  Use this with care - and extend its functionality accordingly!
- *
  */
 /**************************************************************************/
-#ifndef CUSTOM_MIDDLEWARE_00_UART_LIB_UART_H
-#define CUSTOM_MIDDLEWARE_00_UART_LIB_UART_H
+#ifndef CUSTOM_LIBRARIES_UART_UART_H
+#define CUSTOM_LIBRARIES_UART_UART_H
 
 #include "stdio.h"
 #include <string.h>

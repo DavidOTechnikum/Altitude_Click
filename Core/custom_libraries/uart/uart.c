@@ -1,16 +1,13 @@
 /**
+ * Disclaimer: 	This library is entirely taken from a demo project provided by the lecturer.
+ * 				It is not the work of this project's author.
+ *
  * @file    uart.c
  * @author  Volker Tenta, Patrick Schmitt
  * @version 0.0.1
  * @date    2024-04-29
  *
  * @brief This library features a few useful function for handling data via the UART interface.
- *
- *  WARNING! THIS IS A DEMO IMPLEMENTATION! DOES NOT FEATURE ALL ERROR HANDLING / CHECKS!!!
- *
- *  This is only a starting point for your own implementations!
- *
- *  Use this with care - and extend its functionality accordingly!
  *
  */
 /**************************************************************************/
@@ -69,8 +66,6 @@ void clear_buffer_overflow(UART_HandleTypeDef *huart) {
  * The "ToIdle" functionality reacts to incoming data as long as no idle condition is met.
  * This simplifies the detection of "finished" messages.
  *
- * TODO: Double buffers really necessary? Error handling.
- *
  * @param UART_HandleTypeDef *huart A pointer to a UART_HandleTypeDef structure that contains
  *               					the configuration information for the specified UART module.
  * @param uint16_t size A variable which holds the number of data available by the UART interface.
@@ -82,6 +77,7 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t size) {
 		if(check_for_buffer_overflow(huart)) {
 			printf("overflow happened\r\n");
 			clear_buffer_overflow(huart);
+			// The only contribution of this project's author (used for debugging):
 			memcpy(uart_buffer, UART_OVERFLOW, strlen(UART_OVERFLOW));
 		} else {
 

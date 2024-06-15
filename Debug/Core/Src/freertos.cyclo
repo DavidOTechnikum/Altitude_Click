@@ -1,5 +1,5 @@
-../Core/Src/freertos.c:144:6:MX_FREERTOS_Init	1
-../Core/Src/freertos.c:199:6:altitude_monitor_task_func	4
-../Core/Src/freertos.c:233:6:data_task_func	4
-../Core/Src/freertos.c:274:6:wifi_monitor_task_func	6
-../Core/Src/freertos.c:313:6:sender_task_func	5
+../Core/Src/freertos.c:141:6:MX_FREERTOS_Init	6
+../Core/Src/freertos.c:225:6:altitude_monitor_task_func	4
+../Core/Src/freertos.c:263:6:data_task_func	4
+../Core/Src/freertos.c:308:6:wifi_monitor_task_func	6
+../Core/Src/freertos.c:355:6:sender_task_func	5

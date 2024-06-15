@@ -1,7 +1,7 @@
-../Core/custom_libraries/altitude_click/altitude.c:11:7:calculate_pressure	4
-../Core/custom_libraries/altitude_click/altitude.c:34:7:calculate_temperature	2
-../Core/custom_libraries/altitude_click/altitude.c:45:7:calculate_altitude	1
-../Core/custom_libraries/altitude_click/altitude.c:57:19:read_data	6
-../Core/custom_libraries/altitude_click/altitude.c:87:19:calibration	3
-../Core/custom_libraries/altitude_click/altitude.c:138:19:altitude_read	2
-../Core/custom_libraries/altitude_click/altitude.c:158:6:data_in_queue	1
+../Core/custom_libraries/altitude_click/altitude.c:31:7:calculate_pressure	4
+../Core/custom_libraries/altitude_click/altitude.c:66:7:calculate_temperature	2
+../Core/custom_libraries/altitude_click/altitude.c:87:7:calculate_altitude	1
+../Core/custom_libraries/altitude_click/altitude.c:113:19:read_data	6
+../Core/custom_libraries/altitude_click/altitude.c:161:19:calibration	7
+../Core/custom_libraries/altitude_click/altitude.c:227:19:altitude_read	3
+../Core/custom_libraries/altitude_click/altitude.c:261:6:data_in_queue	1

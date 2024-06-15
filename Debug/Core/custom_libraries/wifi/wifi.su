@@ -1,7 +1,7 @@
-../Core/custom_libraries/wifi/wifi.c:60:19:send_wifi_command	24	static
-../Core/custom_libraries/wifi/wifi.c:81:6:receive_wifi_command	16	static
-../Core/custom_libraries/wifi/wifi.c:106:19:send_TCP_command	40	static
-../Core/custom_libraries/wifi/wifi.c:133:6:check_wifi_response	24	static
-../Core/custom_libraries/wifi/wifi.c:149:6:wifi_init_stage_and_TCP_check	24	static
-../Core/custom_libraries/wifi/wifi.c:162:6:wifi_init	272	static
-../Core/custom_libraries/wifi/wifi.c:220:6:build_message	56	static
+../Core/custom_libraries/wifi/wifi.c:53:19:send_wifi_command	24	static
+../Core/custom_libraries/wifi/wifi.c:80:6:receive_wifi_command	16	static
+../Core/custom_libraries/wifi/wifi.c:109:19:send_TCP_command	40	static
+../Core/custom_libraries/wifi/wifi.c:136:6:check_wifi_response	24	static
+../Core/custom_libraries/wifi/wifi.c:161:6:wifi_init_stage_and_TCP_check	24	static
+../Core/custom_libraries/wifi/wifi.c:193:6:wifi_init	272	static
+../Core/custom_libraries/wifi/wifi.c:259:6:build_message	56	static
