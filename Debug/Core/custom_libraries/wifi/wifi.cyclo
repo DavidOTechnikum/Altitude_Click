@@ -1,7 +1,0 @@
-../Core/custom_libraries/wifi/wifi.c:53:19:send_wifi_command	2
-../Core/custom_libraries/wifi/wifi.c:80:6:receive_wifi_command	3
-../Core/custom_libraries/wifi/wifi.c:109:19:send_TCP_command	3
-../Core/custom_libraries/wifi/wifi.c:136:6:check_wifi_response	2
-../Core/custom_libraries/wifi/wifi.c:161:6:wifi_init_stage_and_TCP_check	3
-../Core/custom_libraries/wifi/wifi.c:193:6:wifi_init	10
-../Core/custom_libraries/wifi/wifi.c:259:6:build_message	4

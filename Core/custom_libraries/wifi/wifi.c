@@ -247,7 +247,7 @@ bool wifi_init() {
 /**
  * @brief 	Function builds message TCP send with sensor values.
  * @note	Message for base station is built here.
- * 			Format: "<device id>,<mode>,<value in float>;"
+ * 			Format: "<device id>,<physical quantity>,<value in float>;"
  * 			Modes: P for pressure, TP for temperature (indicating that
  * 			this is the temperature measurement by this station), ALT
  * 			for altitude measurement.

@@ -51,7 +51,7 @@ typedef struct {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define NO_WIFI
+//#define NO_WIFI
 #define DEBUGGING
 /* USER CODE END EM */
 
@@ -75,8 +75,6 @@ void Error_Handler(void);
 #define SWCLK_GPIO_Port GPIOA
 #define VCP_RX_Pin GPIO_PIN_15
 #define VCP_RX_GPIO_Port GPIOA
-#define LD3_Pin GPIO_PIN_3
-#define LD3_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 //// MPL3115A2 register definitions
