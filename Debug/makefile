@@ -17,7 +17,6 @@ RM := rm -rf
 -include Core/custom_libraries/wifi/subdir.mk
 -include Core/custom_libraries/uart/subdir.mk
 -include Core/custom_libraries/printf/subdir.mk
--include Core/custom_libraries/helper_functions/subdir.mk
 -include Core/custom_libraries/altitude_click/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk

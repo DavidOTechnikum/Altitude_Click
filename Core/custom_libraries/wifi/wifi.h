@@ -31,14 +31,19 @@
 #include "cmsis_os2.h"
 #include "usart.h"
 
-#include "../custom_libraries/helper_functions/helper_functions.h"
 #include "../custom_libraries/uart/uart.h"
+
 
 #define WIFI_TASK_NAME "wifi_task"
 #define WIFI_TASK_SIZE 512 * 4
 #define WIFI_TASK_PRIORITY osPriorityNormal
 #define WIFI_DELAY 5000
 #define SECOND 1000
+#define RETRY 10
+#define MESSAGE_LEN 25
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+
+
 
 
 HAL_StatusTypeDef send_wifi_command(uint8_t* cmd, uint8_t cmd_size);
@@ -47,6 +52,7 @@ HAL_StatusTypeDef send_TCP_command(const char* command);
 bool check_wifi_response(uint8_t* response);
 bool wifi_init_stage_and_TCP_check(uint8_t* cmd);
 bool wifi_init();
+void build_message(message received , char *sendmsg);
 
 
 

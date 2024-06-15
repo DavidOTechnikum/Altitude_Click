@@ -111,7 +111,7 @@ HAL_StatusTypeDef send_TCP_command(const char* command) {
 	if (result != HAL_OK) {
 		return result;
 	}
-	osDelay(1000);  // Delay for CIPSEND ready signal
+	osDelay(SECOND);  // Delay for CIPSEND ready signal
 	result = HAL_UART_Transmit(&huart1, (uint8_t*)command, strlen(command), HAL_MAX_DELAY);
 	if (!receive_wifi_command((uint8_t*)buffer)) {
 		result = HAL_ERROR;
@@ -163,6 +163,7 @@ bool wifi_init() {
 	bool success_check = false;
 	bool response_check = false;
 	uint8_t response_buffer[MAX_BUFFER_SIZE];
+	uint8_t i;
 
 	clear_buffer_overflow(&huart1);
 	clear_buffer_overflow(&huart2);
@@ -191,10 +192,15 @@ bool wifi_init() {
 	//		send_wifi_command(at_cmd, ARRAY_SIZE(at_cmd));
 	//		receive_wifi_command(at_cmd);
 
+	i = 0;
 	while (!response_check) {
+		if (i >= RETRY) {
+			return false;
+		}
 		if (send_wifi_command(connect_to_TCP, ARRAY_SIZE(connect_to_TCP))
 				== HAL_OK) {
 			if (!check_wifi_response(response_buffer)) {
+				i++;
 				continue;
 			}
 			if (strstr((char*) response_buffer, "CONNECT")) {
@@ -203,8 +209,22 @@ bool wifi_init() {
 			}
 		}
 		osDelay(SECOND);
+		i++;
 	}
 	no_tcp_connection = false;
 
 	return success_check;
+}
+
+
+void build_message(message received, char *sendmsg) {
+	uint8_t device_id = DEVICE_ID;
+	if (strcmp(received.mode, "P") == 0 || strcmp(received.mode, "ALT") == 0) {
+		snprintf(sendmsg, MESSAGE_LEN, "%d,%s,%.2f;\r\n", device_id,
+				received.mode, received.value);
+	} else if (strcmp(received.mode, "TP") == 0) {
+		snprintf(sendmsg, MESSAGE_LEN, "%d,%s,%.1f;\r\n", device_id,
+				received.mode, received.value);
+	}
+	printf(sendmsg);
 }

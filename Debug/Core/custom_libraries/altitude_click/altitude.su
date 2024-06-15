@@ -4,4 +4,4 @@
 ../Core/custom_libraries/altitude_click/altitude.c:57:19:read_data	48	static
 ../Core/custom_libraries/altitude_click/altitude.c:87:19:calibration	56	static
 ../Core/custom_libraries/altitude_click/altitude.c:138:19:altitude_read	48	static
-../Core/custom_libraries/altitude_click/altitude.c:154:6:data_in_queue	32	static
+../Core/custom_libraries/altitude_click/altitude.c:158:6:data_in_queue	32	static

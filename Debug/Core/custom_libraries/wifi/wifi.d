@@ -32,8 +32,7 @@ Core/custom_libraries/wifi/wifi.o: ../Core/custom_libraries/wifi/wifi.c \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim_ex.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h \
- ../Core/Inc/../custom_libraries/helper_functions/helper_functions.h \
- ../Core/Inc/main.h ../Core/Inc/../custom_libraries/uart/uart.h
+ ../Core/Inc/../custom_libraries/uart/uart.h
 ../Core/Inc/../custom_libraries/wifi/wifi.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
 ../Core/Inc/usart.h:
@@ -68,6 +67,4 @@ Core/custom_libraries/wifi/wifi.o: ../Core/custom_libraries/wifi/wifi.c \
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim_ex.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h:
-../Core/Inc/../custom_libraries/helper_functions/helper_functions.h:
-../Core/Inc/main.h:
 ../Core/Inc/../custom_libraries/uart/uart.h:

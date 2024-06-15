@@ -4,3 +4,4 @@
 ../Core/custom_libraries/wifi/wifi.c:133:6:check_wifi_response	24	static
 ../Core/custom_libraries/wifi/wifi.c:149:6:wifi_init_stage_and_TCP_check	24	static
 ../Core/custom_libraries/wifi/wifi.c:162:6:wifi_init	272	static
+../Core/custom_libraries/wifi/wifi.c:220:6:build_message	56	static

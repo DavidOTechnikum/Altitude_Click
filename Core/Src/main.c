@@ -27,8 +27,6 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 
-//#include "../custom_middleware/01_helper_functions/helper_functions.h"
-//#include "../custom_middleware/99_tasks/wifi_task/wifi_task.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

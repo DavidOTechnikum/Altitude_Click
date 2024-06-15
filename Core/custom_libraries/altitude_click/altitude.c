@@ -146,14 +146,18 @@ HAL_StatusTypeDef altitude_read (I2C_HandleTypeDef *hi2c1, osMessageQueueId_t da
 	  }
 	  altitude = calculate_altitude(low_byte, high_byte, higher_byte);
 
-	  data_in_queue("m", altitude, data_queueHandle);
+	  data_in_queue("ALT", altitude, data_queueHandle);
 
-	    return HAL_OK;
+	  // set back to pressure mode
+	  data = 0x39;
+	  HAL_I2C_Mem_Write(hi2c1, 0xC0, 0x26, 1, &data, 1, HAL_MAX_DELAY);
+
+	  return HAL_OK;
 }
 
-void data_in_queue (char *unit, float value, osMessageQueueId_t data_queueHandle) {
+void data_in_queue (char *mode, float value, osMessageQueueId_t data_queueHandle) {
 	message msg;
-    strcpy(msg.unit, unit);
+    strcpy(msg.mode, mode);
     msg.value = value;
     osMessageQueuePut(data_queueHandle, &msg, 0, osWaitForever);
 }

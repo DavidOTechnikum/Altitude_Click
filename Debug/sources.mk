@@ -25,7 +25,6 @@ SUBDIRS := \
 Core/Src \
 Core/Startup \
 Core/custom_libraries/altitude_click \
-Core/custom_libraries/helper_functions \
 Core/custom_libraries/printf \
 Core/custom_libraries/uart \
 Core/custom_libraries/wifi \

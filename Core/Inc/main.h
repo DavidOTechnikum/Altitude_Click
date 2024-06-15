@@ -36,10 +36,10 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-#define UNIT_LEN 2
+#define MODE_LEN 4
 
 typedef struct {
-	char unit[UNIT_LEN];
+	char mode[MODE_LEN];
 	float value;
 } message;
 /* USER CODE END ET */
@@ -78,20 +78,21 @@ void Error_Handler(void);
 #define LD3_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-// MPL3115A2 register definitions
-#define _OUT_P_MSB   0x01    // Pressure/Altitude data (MSB)
-#define _OUT_P_CSB   0x02    // Pressure/Altitude data (middle)
-#define _OUT_P_LSB   0x03    // Pressure/Altitude data (LSB)
-#define _OUT_T_MSB   0x04    // Temperature data (MSB)
-#define _OUT_T_LSB   0x05    // Temperature data (LSB)
-#define _PT_DATA_CFG 0x13    // Data event flag configuration
-#define _BAR_IN_MSB  0x14    // Barometric input for Altitude calculation
-#define _BAR_IN_LSB  0x15    // Barometric input for Altitude calculation
-#define _CTRL_REG1   0x26    // Control register 1
-#define _OFFH        0x2D    // Altitude Data User Offset Register
-#define _MPL3115A2_W_ADDRESS  0xC0
-#define _MPL3115A2_R_ADDRESS  0xC1
+//// MPL3115A2 register definitions
+//#define _OUT_P_MSB   0x01    // Pressure/Altitude data (MSB)
+//#define _OUT_P_CSB   0x02    // Pressure/Altitude data (middle)
+//#define _OUT_P_LSB   0x03    // Pressure/Altitude data (LSB)
+//#define _OUT_T_MSB   0x04    // Temperature data (MSB)
+//#define _OUT_T_LSB   0x05    // Temperature data (LSB)
+//#define _PT_DATA_CFG 0x13    // Data event flag configuration
+//#define _BAR_IN_MSB  0x14    // Barometric input for Altitude calculation
+//#define _BAR_IN_LSB  0x15    // Barometric input for Altitude calculation
+//#define _CTRL_REG1   0x26    // Control register 1
+//#define _OFFH        0x2D    // Altitude Data User Offset Register
+//#define _MPL3115A2_W_ADDRESS  0xC0
+//#define _MPL3115A2_R_ADDRESS  0xC1
 
+#define DEVICE_ID 1
 
 /* USER CODE END Private defines */
 
