@@ -190,7 +190,7 @@ HAL_StatusTypeDef calibration (I2C_HandleTypeDef *hi2c1) {
 
 	    // Take sample
 	    if (read_data (hi2c1, &pr_lsb, &pr_csb, &pr_msb, &temp_lsb, &temp_msb) != HAL_OK) {
-	    	return HAL_ERROR;
+	    	retval = HAL_ERROR;
 	    }
 	    calibration_pressure += calculate_pressure(pr_lsb, pr_csb, pr_msb);
 	  }
@@ -209,7 +209,6 @@ HAL_StatusTypeDef calibration (I2C_HandleTypeDef *hi2c1) {
 	  if (HAL_I2C_Mem_Write(hi2c1, 0xC0, 0x15, 1, &data, 1, HAL_MAX_DELAY) != HAL_OK) {
 		  retval = HAL_ERROR;
 	  }
-
 return retval;
 }
 

@@ -2,6 +2,7 @@
  * Disclaimer: 	This library is entirely taken from a demo project provided by the lecturer.
  * 				It is not the work of this project's author.
  * 				The printf function is used for debugging.
+ * 				If DEBUGGING is not defined in main.h, putchar() will not write to uart.
  *
  * @file    printf.c
  * @author  Volker Tenta, Patrick Schmitt
@@ -31,6 +32,7 @@ extern UART_HandleTypeDef huart2;
  */
 int __io_putchar(int ch)
 {
+#ifdef DEBUGGING
 	int ret;
 	while ((ret=HAL_UART_GetState(&huart2)) == HAL_UART_STATE_BUSY_TX)
 		;
@@ -47,6 +49,7 @@ int __io_putchar(int ch)
 		HAL_UART_Transmit(&huart2, (uint8_t *)&buf, 1, 1000);
 	}
 	return ch;
+#endif
 }
 
 /**

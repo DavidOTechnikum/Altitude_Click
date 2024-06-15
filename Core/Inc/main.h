@@ -51,7 +51,8 @@ typedef struct {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-
+#define NO_WIFI
+#define DEBUGGING
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/

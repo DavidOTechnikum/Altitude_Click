@@ -231,7 +231,7 @@ void altitude_monitor_task_func(void *argument)
 
 	for (;;) {
 		if (sysmod == 0) {
-			printf("setup \n");
+			printf("altitude setup \n");
 
 			if (calibration(&hi2c1) != HAL_OK) {
 				continue;
@@ -272,6 +272,7 @@ void data_task_func(void *argument)
 	/* Infinite loop */
 	while (wifi_on == false) {
 		osDelay(DATA_DELAY);
+
 	}
 	for (;;) {
 		osDelay(POLLING_DELAY);
@@ -311,9 +312,12 @@ void wifi_monitor_task_func(void *argument)
 	bool success_check = false;
 	uint8_t i;
   /* Infinite loop */
-	// Next line: delete '//' for troubleshooting
-	//wifi_on = true;
+#ifdef NO_WIFI
+	wifi_on = true;
+#endif
 	for (;;) {
+
+#ifndef NO_WIFI
 		wifi_on = wifi_init();
 		if (!wifi_on) {
 			continue;
@@ -332,6 +336,7 @@ void wifi_monitor_task_func(void *argument)
 			}
 			osDelay(2 * WIFI_DELAY);
 		}
+#endif
 	}
 
 
@@ -367,11 +372,12 @@ void sender_task_func(void *argument)
 				build_message(received, sendmsg);
 
 				i = 0;
+#ifndef NO_WIFI
 			do {
 				TCP_success = send_TCP_command(sendmsg);
 				i++;
 			} while (TCP_success != HAL_OK && i < RETRY/2);
-
+#endif
 			}
 		} else {
 			osDelay(WIFI_WAIT);

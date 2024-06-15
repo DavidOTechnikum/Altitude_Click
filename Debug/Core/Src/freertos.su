@@ -1,5 +1,5 @@
 ../Core/Src/freertos.c:141:6:MX_FREERTOS_Init	8	static
 ../Core/Src/freertos.c:225:6:altitude_monitor_task_func	40	static
 ../Core/Src/freertos.c:263:6:data_task_func	48	static
-../Core/Src/freertos.c:308:6:wifi_monitor_task_func	24	static
-../Core/Src/freertos.c:355:6:sender_task_func	56	static
+../Core/Src/freertos.c:309:6:wifi_monitor_task_func	24	static
+../Core/Src/freertos.c:360:6:sender_task_func	56	static

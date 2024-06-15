@@ -3,5 +3,5 @@
 ../Core/custom_libraries/altitude_click/altitude.c:87:7:calculate_altitude	1
 ../Core/custom_libraries/altitude_click/altitude.c:113:19:read_data	6
 ../Core/custom_libraries/altitude_click/altitude.c:161:19:calibration	7
-../Core/custom_libraries/altitude_click/altitude.c:227:19:altitude_read	3
-../Core/custom_libraries/altitude_click/altitude.c:261:6:data_in_queue	1
+../Core/custom_libraries/altitude_click/altitude.c:226:19:altitude_read	3
+../Core/custom_libraries/altitude_click/altitude.c:260:6:data_in_queue	1
